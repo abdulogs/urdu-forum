@@ -1,0 +1,12 @@
+pip install Django==3.2
+pip install django-active-link==0.1.8
+pip install djangorestframework==3.13.1
+pip install djangorestframework-simplejwt==5.0.0
+pip install django-smartfields==1.1.3
+pip install django-email-utils==1.0.0
+pip install django-filter==21.1
+pip install django-cors-headers==3.11.0
+pip install django-colorfield==0.6.3
+pip install drf-writable-nested==0.6.3
+pip install drf-nested-serializer==0.1.0
+pip install django-widget-tweaks==1.4.12

@@ -1,0 +1,163 @@
+{% load static %}
+
+{% load active_link_tags %}
+
+{% load helpers %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link rel="shortcut icon" href="{% static 'icons/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'libs/boxicons/css/boxicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/utilities.css' %}">
+    <title>{% block title %} {% endblock %} Forum</title>
+    <link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body id="pageload" class="bg-light">
+
+    <!-- Navbar -->
+    <header class="navbar navbar-expand navbar-light fixed-top bg-white shadow-sm py-1">
+        <nav class="container container-sm container-md container-lg container-xl container-xxl">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.jpg' %}" width="120" class="d-inline-block">
+            </a>
+
+            {% if user.is_authenticated == False %}
+            <ul class="navbar-nav nav-right">
+                <li class="nav-item mx-2">
+                    <a class="nav-link text-dark btn btn-light px-3 fw-bold shadow-none rounded-pill"
+                        href="{% url 'login' %}">
+                        Login
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark btn btn-light px-3 fw-bold shadow-none rounded-pill"
+                        href="{% url 'signup' %}">
+                        Sign up
+                    </a>
+                </li>
+            </ul>
+            {% else %}
+            <div class="dropdown ms-3">
+                <a href="javascript:void(0)" data-bs-toggle="dropdown"
+                    class="d-flex align-items-center text-dark text-decoration-none">
+                    <div class="size-35 me-2">
+                        <img src="{{ user.avatar | placeholder }}" alt=""
+                            class="rounded-circle w-100 h-100 object-cover">
+                    </div>
+                    <b class="font-14">{{ user.username }}</b>
+                    <b class="bx bx-chevron-down font-18"></b>
+                </a>
+                <div class="dropdown-menu shadow border-0 rounded-4">
+                    <a href="{% url 'profile' %}" class="dropdown-item">
+                        <span class="icon bx bx-user-circle"></span> Profile
+                    </a>
+                    {% if user.is_superuser %}
+                    <a href="{% url 'team' %}" class="dropdown-item">
+                        <span class="icon bx bx-group"></span> Team
+                    </a>
+                    {% endif %}
+
+                    <a href="{% url 'changePassowrd' %}" class="dropdown-item">
+                        <span class="icon bx bx-lock"></span> Change password
+                    </a>
+                    <a href="{% url 'logout' %}" class="dropdown-item" onclick="logout()">
+                        <span class="icon bx bx-log-out"></span> Logout
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </nav>
+    </header>
+    <!-- Navbar -->
+
+
+    <!-- Content -->
+    {% block content %}{% endblock %}
+    <!-- Content -->
+
+
+
+    <!-- Footer -->
+    <footer class="footer m-0 p-0">
+
+    </footer>
+    <!-- Footer -->
+
+    <!-- Create or update -->
+    {% block modals %} {% endblock %}
+    <!-- Create or update -->
+
+    <!-- Details -->
+    <div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="detailsModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <b class="bx bx-show me-2 font-20 text-success bg-light p-2 rounded-circle"></b>
+                        <b>Details</b>
+                    </h5>
+                    <button type="button" class="btn-close text-reset shadow-none btn-light"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="details"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Details -->
+
+    <!-- Confirm box -->
+    <div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="confirmbox">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title font-14 fw-normal m-0 d-flex align-items-center">
+                        <span class="bx bx-info-circle me-2 font-20 text-warning"></span>
+                        <b id="confirmTitle">Are you sure?</b>
+                    </h5>
+                    <button type="button" class="btn-close deleteNo" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-1">
+                    <p id="confirmDescription" class="m-0 font-14"></p>
+                </div>
+                <div class="modal-footer border-0 py-2">
+                    <button type="button" class="btn btn-light deleteNo" data-bs-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-danger deleteYes" data-bs-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Confirm box -->
+
+    <!-- Message -->
+    <div id="response" class="toast-container p-3 top-0 start-50 translate-middle-x position-fixed"></div>
+    <!-- Message -->
+
+
+    <input type="hidden" value="{{csrf_token}}" name="token" id="token">
+
+    <!-- Libraries -->
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/popper/popper.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'libs/moment/moment.min.js' %}"></script>
+
+    <!-- Common.js -->
+    <script src="{% static 'js/utils.js' %}"></script>
+
+    <!-- Page scripts -->
+    {% block scripts %}{% endblock %}
+
+    <!-- Filters -->
+    <script src="{% static 'js/filters.js' %}"></script>
+</body>
+
+</html>

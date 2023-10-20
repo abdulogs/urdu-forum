@@ -1,0 +1,67 @@
+{% extends 'layouts/default.html' %}
+
+{% load static %}
+
+{% load helpers %}
+
+{% block title %} {% endblock %}
+
+{% block seo %}
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="" />
+{% endblock %}
+
+
+{% block content %}
+<main class="bg-light pt-5 mt-5 pb-5">
+    <section class="container container-sm container-md container-lg container-xl container-xxl">
+        <div class="row align-items-center">
+            <div class="col-sm-6 bg-image">
+                <div class="card shadow border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <div class="dotted-square"></div>
+                        <div class="w-100">
+                            <img src="{% static 'images/about.jpg' %}" class="img-fluid" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-3">
+                    <h1 class="m-0 mb-2 d-flex align-items-center font-20">
+                        <b class="mx-2">-</b>
+                        <b class="font-40"> About <span class=" text-info">khilafat360</span> </b>
+                    </h1>
+                    <p class="font-14 mb-2">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis voluptates facilis iusto
+                        nobis!
+                        Distinctio, cum. Similique eos, odit perspiciatis repellat quo dolore id atque, illum assumenda
+                        nam,
+                        velit eum? Consequatur?
+                    </p>
+                    <p class="font-14 mb-2">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis voluptates facilis iusto
+                        nobis!
+                        Distinctio, cum. Similique eos, odit perspiciatis repellat quo dolore id atque, illum assumenda
+                        nam,
+                        velit eum? Consequatur?
+                    </p>
+                    <p class="font-14 mb-2">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis voluptates facilis iusto
+                        nobis!
+                        Distinctio, cum. Similique eos, odit perspiciatis repellat quo dolore id atque, illum assumenda
+                        nam,
+                        velit eum? Consequatur?
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+
+{% block scripts %} {% endblock %}

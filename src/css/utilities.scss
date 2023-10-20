@@ -1,0 +1,44 @@
+$size:20;
+
+@while $size < 200 {
+    $size: $size + 5;
+
+    .size-#{$size} {
+        height: $size + px;
+        min-height: $size + px;
+        max-height: $size + px;
+        width: $size + px;
+        min-width: $size + px;
+        max-width: $size + px;
+    }
+}
+
+$fs: 8;
+
+@while $fs < 40 {
+    $fs: $fs + 2;
+
+    .font-#{$fs} {
+        font-size: $fs + px;
+    }
+}
+
+.object-center {
+    object-position: center;
+}
+
+.object-cover {
+    object-fit: cover;
+}
+
+.object-contain {
+    object-fit: contain;
+}
+
+.object-fill {
+    object-fit: fill;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}

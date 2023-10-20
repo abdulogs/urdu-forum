@@ -1,0 +1,29 @@
+{% extends 'layouts/default.html' %}
+
+{% load static %}
+
+{% block title %} Error [404] - Page not found - {% endblock %}
+
+{% block seo %} {% endblock %}
+
+{% block styles %} {% endblock %}
+
+{% block content %}
+<div class="card border-0 p-4 text-center">
+    <div class="card-header bg-white p-0 border-0">
+        <h1 class="text-danger m-0 mb-2"><b>Page not found</b></h1>
+    </div>
+    <div class="card-body p-0">
+        <h4 class="m-0 font-weight-bolder mb-3"><b>Error [404]</b></h4>
+        <p class="m-0 font-weight-bolder mb-3">
+            The content you are requesting might not be available right now.
+        </p>
+    </div>
+    <div class="card-footer bg-white p-0 border-0">
+        <a href="/dashboard/" class="btn btn-primary btn-sm"> Go back </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

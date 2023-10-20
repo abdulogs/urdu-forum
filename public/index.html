@@ -1,0 +1,182 @@
+{% extends 'layouts/default.html' %}
+
+{% load static %}
+
+{% load helpers %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<main class="container container-sm container-md container-lg container-xl container-xxl py-5">
+    <section class="row justify-content-center py-5" id="posting">
+        <div class="col-sm-6">
+            {% if user.is_authenticated %}
+            <form class="card bg-white shadow border-0 rounded-4 modalForm" id="create" autocomplete="off" method="post"
+                enctype="multipart/form-data">
+                <div class="card-header bg-transparent border-0 py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="me-2 size-40" title="{{ user.username }}">
+                            <img src="{{ user.avatar | placeholder }}"
+                                class="rounded-circle border w-100 h-100 object-center object-cover">
+                        </div>
+                        <div class="me-2">
+                            <h6 class="mb-0 font-14 text-truncate"><b>{{ user.first_name }} {{ user.last_name }}</b>
+                            </h6>
+                            <p class="m-0 text-muted">@{{ user.username }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body text-dark py-2">
+                    <div id="hiddenFields"></div>
+                    <input type="text" class="text-dark font-20 border-0 form-control shadow-none fw-bold" dir="auto"
+                        id="name" placeholder="Title...">
+                    <textarea id="description" class="text-dark font-16 border-0 form-control shadow-none" dir="auto"
+                        placeholder="Write your query..."></textarea>
+                    <p class="m-0">Allowed english words
+                        <span id="penglishwordslimit">10</span> / <b id="post_counter">0</b>
+                    </p>
+                </div>
+                <div class="card-footer border-0">
+                    <button class="btn btn-success p-2 px-4 rounded-pill font-12 fw-bold" id="btnsubmit">
+                        Publish
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <div class="py-3 text-center border rounded-4">
+                <h2 class="font-30 fw-bold mb-2">Login to create posts</h2>
+                <a class="btn btn-dark px-3 fw-bold shadow-none rounded-pill" href="{% url 'login' %}">
+                    Login
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="card shadow border-0 rounded-4 my-4">
+                <div class="card-body py-4">
+                    <h4 class="card-title">🥳 Hi!<b> {{ user.first_name }} {{ user.last_name }}</b></h4>
+                    <p class="m-0 text-muted">Welcome to our forum.
+                        Please share your questions here our community
+                        will give you answers
+                    </p>
+                </div>
+            </div>
+            <!-- Sorting -->
+            <div class="p-2 d-flex align-items-center justify-content-between user-select-none">
+                <div>
+                    <label for="posts_ordering" class="m-0 fw-bold">Sort:</label>
+                    <select id="posts_ordering" class="bg-transparent border-0">
+                        <option value="-id">Newest</option>
+                        <option value="id">Oldest</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filter_posts" class="m-0 fw-bold">Filter:</label>
+                    <select id="filter_posts" class="bg-transparent border-0">
+                        <option value="">All</option>
+                        {% if user.is_authenticated %}
+                        <option value="{{ user.id }}">Only mine</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+            <!-- Sorting -->
+            <form class="input-group input-group-sm bg-white font-12 shadow-sm rounded-pill px-3 mb-2 border"
+                id="search">
+                <input type="text" class="form-control shadow-none border-0 bg-transparent rounded-0" id="searchText"
+                    placeholder="Search...">
+                <button class="input-group-text bx bx-search shadow-none border-0 bg-transparent rounded-0"
+                    type="submit"></button>
+            </form>
+
+
+            <div id="listing" class="mb-5"></div>
+            <div class="text-center mb-5">
+                <button class="btn btn-light btn-sm font-12 fw-bold border user-select-none" id="loadPostsBtn"
+                    value="1">
+                    Load more...
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="openComments">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header border-0 py-2 mb-0 d-flex align-items-center">
+                <div id="posted_by" class="w-100"></div>
+                <button type="button" class="btn-close shadow-none me-1 mb-1" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 bg-light" id="post-comment-body">
+                <!-- Post details -->
+                <div id="post_data" class="px-3 bg-white"></div>
+                <!-- Post details -->
+
+                <!-- Ordering -->
+                <div class="p-3 border-top">
+                    <select id="comments_ordering" class="bg-transparent border-0">
+                        <option value="-id">Newest</option>
+                        <option value="id">Oldest</option>
+                    </select>
+                </div>
+                <!-- Ordering -->
+
+                <!-- Comments -->
+                <div id="comments"></div>
+                <!-- Comments -->
+                <div class="text-center mb-5">
+                    <button class="btn btn-light bg-transparent btn-sm font-12 fw-bold" id="loadCommentsBtn">
+                        Load answers...
+                    </button>
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="modal-footer py-1 px-2 border-top bg-light border-0" id="commentBox">
+                <p class="m-0">Allowed english words
+                    <span id="cenglishwordslimit">10</span> / <b id="comment_counter">0</b>
+                </p>
+                <input type="hidden" id="post_id" placeholder="post_id">
+                <input type="hidden" id="comment_id" placeholder="comment_id">
+                <form class="commentForm w-100" id="commentCreate">
+                    <div class="d-flex align-items-center">
+                        <div class="me-2">
+                            <img src="{{ user.avatar | placeholder }}" title="{{ user.username }}"
+                                class="rounded-circle" width="30" height="30">
+                        </div>
+                        <textarea class="text-dark w-100 font-14 form-control shadow-none p-2 rounded-4 border"
+                            dir="auto" id="comment_text" placeholder="Write your answer..."></textarea>
+                        <button
+                            class="btn btn-success rounded-circle ms-2 p-2 font-20 bx bx-send border border-3 border-light"
+                            id="commentsubmit">
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="modal-footer justify-content-center text-center py-1">
+                <a class="btn btn-dark px-3 fw-bold w-100 shadow-none rounded-pill" href="{% url 'login' %}">
+                    Login to add answers
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{% static 'modules/forum/post/listing.js' %}"></script>
+<script src="{% static 'modules/forum/post/detail.js' %}"></script>
+<script src="{% static 'modules/forum/post/create.js' %}"></script>
+<script src="{% static 'modules/forum/post/update.js' %}"></script>
+<script src="{% static 'modules/forum/post/delete.js' %}"></script>
+
+
+<script src="{% static 'modules/forum/comment/listing.js' %}"></script>
+<script src="{% static 'modules/forum/comment/create.js' %}"></script>
+<script src="{% static 'modules/forum/comment/update.js' %}"></script>
+<script src="{% static 'modules/forum/comment/delete.js' %}"></script>
+
+<script src="{% static 'modules/forum/comment/reaction.js' %}"></script>
+{% endblock %}
